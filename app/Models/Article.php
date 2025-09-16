@@ -41,6 +41,11 @@ class Article extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function revisions(): HasMany
+    {
+        return $this->hasMany(ArticleRevision::class)->orderBy('created_at', 'desc');
+    }
+
     public function getFiltered(array $filters): Collection
     {
         return $this->filter($filters, 'tag', 'tags', 'name')
