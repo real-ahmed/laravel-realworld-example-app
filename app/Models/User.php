@@ -41,13 +41,21 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id');
     }
 
-    public function doesUserFollowAnotherUser(int $followerId, int $followingId): bool
+    public function doesUserFollowAnotherUser(?int $followerId, ?int $followingId): bool
     {
+        if (is_null($followerId) || is_null($followingId)) {
+            return false;
+        }
+
         return $this->where('id', $followerId)->whereRelation('following', 'id', $followingId)->exists();
     }
 
-    public function doesUserFollowArticle(int $userId, int $articleId): bool
+    public function doesUserFollowArticle(?int $userId, ?int $articleId): bool
     {
+        if (is_null($userId) || is_null($articleId)) {
+            return false;
+        }
+
         return $this->where('id', $userId)->whereRelation('favoritedArticles', 'id', $articleId)->exists();
     }
 

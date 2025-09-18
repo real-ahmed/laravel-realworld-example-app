@@ -21,7 +21,10 @@ class ArticleRevisionController extends Controller
         // Ensure the user can access this article's revisions
         $this->authorize('viewRevisions', $article);
 
-        $revisions = $article->revisions()->orderBy('created_at', 'desc')->get();
+        $revisions = $article->revisions()
+            ->with(['article.user', 'article.tags'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return new ArticleRevisionCollection($revisions);
     }
@@ -38,6 +41,9 @@ class ArticleRevisionController extends Controller
 
         // Ensure the user can access this article's revisions
         $this->authorize('viewRevisions', $article);
+
+        // Load the necessary relationships
+        $revision->load(['article.user', 'article.tags']);
 
         return new ArticleRevisionResource($revision);
     }
